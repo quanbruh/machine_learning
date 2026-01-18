@@ -39,11 +39,11 @@ if __name__=="__main__":
     data = pd.read_csv("housing.csv")
 
     # Lấy 2 feature
-    x1 = data["median_income"].values[:5]
-    x2 = data["housing_median_age"].values[:5]
+    x1 = np.array([1, 2, 3, 4])
+    x2 = np.array([3, 7, 11, 9])
 
     # Target
-    y = data["median_house_value"].values[:5]
+    y = np.array([15, 18, 23, 30])
 
     # Combine feature (CHUẨN ML)
     X = np.column_stack((x1, x2))
