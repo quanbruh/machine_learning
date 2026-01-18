@@ -63,6 +63,7 @@ if __name__=="__main__":
     # =========================
     x1_line = np.linspace(x1.min(), x1.max(), 100)
     x2_fixed = np.mean(x2)
+    
 
     X_line = np.column_stack((
         x1_line,
@@ -74,7 +75,7 @@ if __name__=="__main__":
 
 
 
-    quan = np.array([[8, 52]])
+    quan = np.array([[4, 8]])
     print(model.predict(quan))
 
 
