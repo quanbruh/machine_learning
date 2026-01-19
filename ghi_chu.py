@@ -1,16 +1,20 @@
 import numpy as np 
 import pandas as pd
 
-# data = np.array([[1, 2], [3, 4], [5, 6]])
+data = np.array([[1], [4], [6]])
 
-# #tao matrix relevant voi shape khai bao
-# one = np.ones((data.shape[0], 1))
+#tao matrix relevant voi shape khai bao
+one = np.ones((data.shape[0], 1))
 
-# #shape de xem co bao nhieu hang cot shape[0] hang shape[1] cot
-# quan = data.shape[1]
+lee = np.ones((data.shape[1], 2))
 
-# #ghep vs nhau 
-# combine = np.c_[one, data]
+#shape de xem co bao nhieu hang cot shape[0] hang shape[1] cot
+cot = data.shape[1]
+
+hang = data.shape[0]
+
+#ghep vs nhau 
+combine = np.c_[one, data]
 
 # # print(data)
 # # print(one)  
@@ -30,7 +34,13 @@ print(data.head())
 
 x1 = data["median_income"].values[:5]
 
+x3 = data["median_income"]
+
 x2 = data["housing_median_age"].values[:5]
+
+
+
+
 
 
 X = np.column_stack((x1, x2))
@@ -47,3 +57,7 @@ print(X)
 
 print(f"output {Y}")
 
+
+
+
+debug = 1
