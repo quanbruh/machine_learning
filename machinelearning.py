@@ -1,41 +1,41 @@
-import numpy as np 
-import matplotlib.pyplot as plt 
+# # import numpy as np 
+# # import matplotlib.pyplot as plt 
 
-# # np.random.seed(42)
+# # # np.random.seed(42)
 
-# # hours = np.arange(0, 100)
+# # # hours = np.arange(0, 100)
 
-# # normal_temp = 70 + 5 * np.sin(hours/10) + np.random.normal(0, 2, 100)
+# # # normal_temp = 70 + 5 * np.sin(hours/10) + np.random.normal(0, 2, 100)
 
-# # abnormal_indices = [40, 41, 60, 61, 62, 85, 86]
+# # # abnormal_indices = [40, 41, 60, 61, 62, 85, 86]
 
-# # normal_temp [abnormal_indices] = [85, 90, 88, 92, 89, 95, 96]
+# # # normal_temp [abnormal_indices] = [85, 90, 88, 92, 89, 95, 96]
 
-# # plt.figure(figsize=(12,6))
+# # # plt.figure(figsize=(12,6))
 
-# # plt.plot(hours, normal_temp, 'b-', linewidth = 2 , label = 'nhiet do dong co')
+# # # plt.plot(hours, normal_temp, 'b-', linewidth = 2 , label = 'nhiet do dong co')
 
-# # plt.scatter(abnormal_indices, normal_temp[abnormal_indices], color='red', s = 100, zorder =5, label = 'bathuong')
+# # # plt.scatter(abnormal_indices, normal_temp[abnormal_indices], color='red', s = 100, zorder =5, label = 'bathuong')
 
-# # threshold = 80
+# # # threshold = 80
 
-# # plt.axhline(y=threshold, color='orange', linestyle='--',
-# #             label=f"nguong canh bao {threshold} do C")
+# # # plt.axhline(y=threshold, color='orange', linestyle='--',
+# # #             label=f"nguong canh bao {threshold} do C")
 
 
-# # plt.fill_between(hours, threshold, 100, alpha = 0.2, color = 'red')
+# # # plt.fill_between(hours, threshold, 100, alpha = 0.2, color = 'red')
 
-# # plt.xlabel('thoi gian(gio)')
+# # # plt.xlabel('thoi gian(gio)')
 
-# # plt.ylabel('nhiet do(C)')
+# # # plt.ylabel('nhiet do(C)')
 
-# # plt.title('phat hien bat thuong nhiet do dong co')
+# # # plt.title('phat hien bat thuong nhiet do dong co')
 
-# # plt.legend()
+# # # plt.legend()
 
-# # plt.grid(True)
+# # # plt.grid(True)
 
-# # plt.show()
+# # # plt.show()
 
 # import pandas as pd
 # import numpy as np
@@ -149,11 +149,14 @@ import matplotlib.pyplot as plt
 #     visualize_results(result_df)
 
 
-#du doan nhiet do phong 
+# #du doan nhiet do phong 
 
 import numpy as np
 import pandas as pd 
 from datetime import datetime, timedelta
+from quan import linear_regression
+
+
 
 power_data={
     'timestamp':pd.date_range('2024-01-01', periods = 1000, freq ='h'),
@@ -177,6 +180,12 @@ df_prod = pd.DataFrame(production_data)
 
 df = pd.merge(df_power, df_temp, on='timestamp')
 df = pd.merge(df, df_prod, on='timestamp')
+
+
+# tao gia tri null ngau nhien cua power kwh
+
+# idx = np.random.choice(df.index, size=30, replace=False)
+# df.loc[idx, "power_kwh"] = np.nan
 
 print(df.head())
 print(f"\ntong so mau:{len(df)}")
@@ -205,3 +214,114 @@ from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 
 df_scaled = scaler.fit_transform(df[['power_kwh', 'temperature', 'production_rate']])
+
+# # ve duong linear voi power la feature 1 temperature la feature 2 product la output
+
+A = df["power_kwh"].values
+
+B = df["temperature"].values
+
+C = np.array(0.5 * A + 2 * B + np.random.normal(0, 5)) 
+
+
+
+# # # y = df["production_rate"].values
+
+# # X = np.column_stack((x1, x2))
+
+# # dulieu = pd.DataFrame({
+# #     "power": x1,
+# #     "temperature": x2,
+# #     "production": y
+# # })
+
+
+# # model = linear_regression()
+
+# # model.fit(X, y)
+
+# # print(f"gia tri theta 0 la {model.intercept_}")
+# # print(f"gia tri cua cac he so theta la{model.coefi_}")
+
+# # x1_line = np.linspace(x1.min(), x1.max(), 1000)
+
+# # x2_fixed = np.mean(x2)
+
+# # X_line = np.column_stack((x1_line, np.full_like(x1_line, x2_fixed)))
+
+# # y_line = model.predict(X_line)
+
+# # plt.scatter(x1, y, label="cac diem du lieu")
+
+# # plt.plot(x1_line, y_line, color="red", label ="duong fit linear")
+
+# # plt.show()
+
+
+
+
+
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# X1 = df["power_kwh"].values
+X2 = df["temperature"].values
+X3 = df["production_rate"].values
+
+# X = np.column_stack((X1, X2))
+X = np.column_stack((X2, X3))
+
+y = df["power_kwh"]
+
+# y = C
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+print(f"Training sample: {len(X_train)}")
+
+print(f"Testing sample: {len(X_test)}")
+
+model = linear_regression()
+model.fit(X_train, y_train)
+
+print(f"\nmo hinh da hoc duoc")
+
+print(f"he so: {model.coefi_}")
+
+print(f"intercept: {model.intercept_}")
+
+from sklearn.metrics import mean_absolute_error, r2_score
+
+y_pred = model.predict(X_test)
+
+mae = mean_absolute_error(y_test, y_pred)
+
+r2 = r2_score(y_test, y_pred)
+
+print("__ket qua danh gia__")
+
+print(f"MAE:{mae} kWh")
+
+print(f"R square score: {r2}")
+
+print(f"sai so trung binh:{(mae/np.mean(y_test)) * 100} %")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

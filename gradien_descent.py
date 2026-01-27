@@ -39,7 +39,7 @@ if __name__=="__main__":
     # =========================
     # LOAD DATA
     # =========================
-    data = pd.read_csv("housing.csv")
+    data = pd.read_csv("housing.csv")  
 
     # Lấy 2 feature
     x1 = np.array([1, 2, 3, 4])
